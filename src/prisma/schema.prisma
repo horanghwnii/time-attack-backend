@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String       @id
+  email             String       @unique
+  encryptedPassword String
+  userProfile       UserProfile?
+  createdAt         DateTime     @default(now())
+
+  tweet Tweet[]
+
+  comment Comment[]
+
+  bookmark Bookmark[]
+
+  follower  Follows[] @relation("follower")
+  following Follows[] @relation("following")
+}
+
+model UserProfile {
+  userId      String   @id
+  user        User     @relation(fields: [userId], references: [id])
+  nickname    String   @unique
+  description String
+  updatedAt   DateTime @updatedAt
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  tweet     Tweet    @relation(fields: [tweetId], references: [id])
+  tweetId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Follows {
+  follower    User   @relation("follower", fields: [followerId], references: [id])
+  followerId  String
+  following   User   @relation("following", fields: [followingId], references: [id])
+  followingId String
+
+  @@id([followerId, followingId])
+}
+
+model Tweet {
+  id        Int        @id @default(autoincrement())
+  author    User       @relation(fields: [authorId], references: [id])
+  authorId  String
+  title     String
+  content   String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  bookmark  Bookmark[]
+  comments  Comment[]
+}
+
+model Bookmark {
+  id        Int      @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  tweet     Tweet    @relation(fields: [tweetId], references: [id])
+  tweetId   Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, tweetId])
+}
