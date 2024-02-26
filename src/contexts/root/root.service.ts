@@ -6,7 +6,7 @@ import prismaClient from '../../prisma/client.prisma';
 const getAllBookmarks = async (userId: string) => {
   const allBookmarks = await prismaClient.user.findUnique({
     where: { id: userId },
-    select: { bookmark: true },
+    select: { bookmark: { select: { tweet: true } } },
   });
 
   return allBookmarks;

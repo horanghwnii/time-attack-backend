@@ -41,9 +41,9 @@ model UserProfile {
 model Comment {
   id        Int      @id @default(autoincrement())
   content   String
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
-  tweet     Tweet    @relation(fields: [tweetId], references: [id])
+  tweet     Tweet    @relation(fields: [tweetId], references: [id], onDelete: Cascade)
   tweetId   Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -72,9 +72,9 @@ model Tweet {
 
 model Bookmark {
   id        Int      @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  tweet     Tweet    @relation(fields: [tweetId], references: [id])
+  tweet     Tweet    @relation(fields: [tweetId], references: [id], onDelete: Cascade)
   tweetId   Int
   createdAt DateTime @default(now())
 
