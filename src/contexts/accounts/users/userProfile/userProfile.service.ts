@@ -26,8 +26,7 @@ const getUserPage = async (userId: string) => {
     select: {
       userProfile: { select: { nickname: true, description: true } },
       tweet: { orderBy: { createdAt: 'desc' } },
-      following: true,
-      follower: true,
+      _count: { select: { following: true, follower: true } },
     },
   });
 
